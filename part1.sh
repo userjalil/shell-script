@@ -61,6 +61,7 @@ install_php8.1() {
 install_webmin() {
     echo "Adding repository..."
     sudo apt update -y
+    sudo apt install apt-transport-https curl -y
     curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
     sudo echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
 
