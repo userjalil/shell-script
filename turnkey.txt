@@ -1,0 +1,52 @@
+PHP
+====
+apt -y install lsb-release apt-transport-https ca-certificates
+wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+apt update
+apt install -y php7.4 php7.4-cli php7.4-common php7.4-mysql php7.4-zip php7.4-curl php7.4-gd php7.4-mbstring php7.4-xml php7.4-bcmath php7.4-fpm php7.4-phpdbg php7.4-cgi libphp7.4-embed libapache2-mod-php7.4 php7.4-imagick imagemagick
+service apache2 restart 
+ 
+ 
+PHP (apache2/php.ini  &&  fpm/php.ini)
+========================================
+upload_max_filesize
+post_max_size
+memory_limit
+max_execution_time
+max_input_time
+ 
+ 
+ 
+APACHE2
+=========
+AllowOverride All
+a2enmod rewrite
+ 
+
+SSL
+====
+apt install snapd
+snap install core
+snap refresh core
+snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
+cd /etc/apache2/sites-available/
+cp 000-default.conf your_domain.conf
+nano your_domain.conf
+apache2ctl configtest
+systemctl reload apache2
+certbot --apache -d your_domain
+ 
+ 
+FIREWALL
+=========
+apt install ufw
+ufw allow 'WWW Full'
+ufw allow OpenSSH
+ufw allow 12320
+ufw allow 12321
+Ufw allow 443/tcp
+systemctl enable ufw
+systemctl start ufw
+ufw enable
