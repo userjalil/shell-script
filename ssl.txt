@@ -1,0 +1,8 @@
+certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns -d domain.example.com
+certbot certonly --manual -d domain.example.com
+
+restart web service
+
+OPTIONAL
+certbot renew --apache --preferred-challenge dns
+certbot renew --nginx --preferred-challenge dns
