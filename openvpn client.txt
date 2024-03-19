@@ -1,0 +1,45 @@
+client
+dev tun
+proto tcp-client
+
+remote <IP_Server_OpenVPN> <Port_OpenVPN>
+resolv-retry infinite
+nobind
+
+# Allow traffic through VPN interface for access 10.10.0.0/16 subnet
+route 10.10.0.0 255.255.0.0 vpn_gateway
+
+# Block all traffic through WiFi interface except traffic to the VPN server
+route 0.0.0.0 128.0.0.0 net_gateway
+route 128.0.0.0 128.0.0.0 net_gateway
+
+# DNS server
+dhcp-option DNS 8.8.8.8
+dhcp-option DNS 8.8.4.4
+
+nobind
+persist-key
+persist-tun
+
+<ca>
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+</ca>
+
+<cert>
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+</cert>
+
+<key>
+-----BEGIN ENCRYPTED PRIVATE KEY-----
+-----END ENCRYPTED PRIVATE KEY-----
+</key>
+
+verb 4
+cipher AES-256-CBC
+auth SHA
+
+# Auth user pass verify file
+auth-user-pass file
+auth-nocache
