@@ -2,7 +2,7 @@ client
 dev tun
 proto tcp-client
 
-remote <IP_Server_OpenVPN> <Port_OpenVPN>
+remote <1.2.3.4 or vpn.example.com> <Port_OpenVPN>
 resolv-retry infinite
 nobind
 
