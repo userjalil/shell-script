@@ -1,0 +1,24 @@
+server {
+        server_name _;
+
+        location / {
+                proxy_pass https://ip_;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-Proto $scheme;
+
+	     # Error 413 "Request Entity to Large
+	     client_max_body_size 50M;
+	
+                proxy_hide_header Upgrade;
+                proxy_hide_header X-Powered-By;
+
+                add_header Content-Security-Policy "upgrade-insecure-request";
+                add_header X-Frame-Options "SAMEORIGIN";
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Content-Type-Options "nosniff" always;
+                add_header Cache-Control "no-transform" always;
+                add_header Referrer-Policy no-referrer always;
+                add_header X-Robots-Tag none;
+        }
+}
