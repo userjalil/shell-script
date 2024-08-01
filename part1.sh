@@ -23,10 +23,10 @@ install_apache() {
     sudo apt update 
 
     echo "Installing apache2 packages..."
-    sudo apt install apache2 libapache2-mod-fcgid -y
+    sudo apt install apache2 libapache2-mod-fcgid zip unzip -y
 
     echo "Enabling modules..."
-    sudo a2enmod actions fcgid alias proxy_fcgi
+    sudo a2enmod actions fcgid alias proxy_fcgi ssl
 
     echo "Installing apache2 completed."
 }
