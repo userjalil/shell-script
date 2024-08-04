@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Prompt for domain name
+read -p "Masukkan nama domain (contoh: example.com): " DOMAIN_NAME
+
+# Variables for the certificate and Apache configuration
+CERT_DIR="/etc/ssl/$DOMAIN_NAME"
+APACHE_CONF="/etc/apache2/sites-available/$DOMAIN_NAME.conf"
+
+# Create the directory to store the certificate
+sudo mkdir -p $CERT_DIR
+
+# Generate the private key and the certificate
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $CERT_DIR/$DOMAIN_NAME.key -out $CERT_DIR/$DOMAIN_NAME.crt -subj "/CN=$DOMAIN_NAME"
+
+# Create a new Apache configuration file for the domain
+sudo bash -c "cat > $APACHE_CONF" <<EOL
+<VirtualHost *:443>
+    ServerAdmin webmaster@$DOMAIN_NAME
+    ServerName $DOMAIN_NAME
+    DocumentRoot /var/www/$DOMAIN_NAME
+
+    SSLEngine on
+    SSLCertificateFile $CERT_DIR/$DOMAIN_NAME.crt
+    SSLCertificateKeyFile $CERT_DIR/$DOMAIN_NAME.key
+
+    <Directory /var/www/$DOMAIN_NAME>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog \${APACHE_LOG_DIR}/$DOMAIN_NAME-error.log
+    CustomLog \${APACHE_LOG_DIR}/$DOMAIN_NAME-access.log combined
+</VirtualHost>
+EOL
+
+# Enable the new site and the SSL module
+sudo a2ensite $DOMAIN_NAME.conf
+sudo a2enmod ssl
+
+# Reload Apache to apply the changes
+sudo systemctl reload apache2
+
+echo "Self-signed certificate generated and Apache configured for $DOMAIN_NAME"
