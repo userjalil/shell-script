@@ -21,24 +21,28 @@ sudo openssl req -x509 -nodes -days $VALIDITY_DAYS -newkey rsa:2048 -keyout $CER
 
 # Create a new Apache configuration file for the domain
 sudo bash -c "cat > $APACHE_CONF" <<EOL
-<VirtualHost *:443>
+ServerName localhost
+<VirtualHost *:80>
     ServerAdmin webmaster@localhost
-    ServerName $DOMAIN_NAME
-    DocumentRoot /var/www/$WEB_DIR
+    DocumentRoot /var/www/$WEB_DIR/
+</VirtualHost>
 
+<VirtualHost *:443>
     SSLEngine on
     SSLCertificateFile $CERT_DIR/$DOMAIN_NAME.crt
-    SSLCertificateKeyFile $CERT_DIR/$DOMAIN_NAME.key
-
-    <Directory /var/www/$WEB_DIR>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
+    SSLCertificateKeyFile /$CERT_DIR/$DOMAIN_NAME.key
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/$WEB_DIR/
 
     ErrorLog \${APACHE_LOG_DIR}/$DOMAIN_NAME-error.log
-    CustomLog \${APACHE_LOG_DIR}/$DOMAIN_NAME-access.log combined
+    CustomLog \${APACHE_LOG_DIR}/$DOMAIN_NAME-access.log combined        
 </VirtualHost>
+
+<Directory /var/www/$WEB_DIR/>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Require all granted
+</Directory>
 EOL
 
 # Enable the new site and the SSL module
